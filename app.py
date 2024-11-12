@@ -23,42 +23,35 @@ def setup_messages(system_message):
 
 left, right = st.columns(2)
 
-with st.expander("ℹ️ Disclaimer"):
-    st.caption(
-    """This app may be unavailable if too many people are using it currently. You can only submit up to ten messages per conversation. Thank you for your understanding.
-    """
-    )
-#with left:
-if False:
+with left:
     with st.expander("ℹ️ Disclaimer"):
         st.caption(
-        """This demo is designed to
-        process a maximum of 10 interactions and may be unavailable if too many
-        people use the service concurrently. Thank you for your understanding.
+        """This app may be unavailable if too many people are using it currently. You can only submit up to ten messages per conversation. Thank you for your understanding.
         """
         )
 
-if False:
-    with right:
-        with st.expander("End Conversation"):
-            st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
-            if st.button('Submit', key=None, help=None):
-                submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
+with right:
+    with st.expander("End Conversation?"):
+        st.text_input(label="Enter your Prolific ID",key="user_id")
+        st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
+        if st.button('Submit', key=None, help=None):
+            submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
-                user_data={"user_id":st.session_state.user_id,
+            user_data={"user_id":st.session_state.user_id,
                         "conversation":st.session_state.messages,
+                        "score":st.session_state.score,
                         "time":submission_time}
-                
-                from pymongo.mongo_client import MongoClient
-                from pymongo.server_api import ServerApi
-                with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                        db = client.chat
-                        collection = db.app
-                        collection.insert_one(user_data)  
-                        st.session_state.inserted += 1
+            
+            from pymongo.mongo_client import MongoClient
+            from pymongo.server_api import ServerApi
+            with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
+                    db = client.chat
+                    collection = db.app
+                    collection.insert_one(user_data)  
+                    st.session_state.inserted += 1
 
-                        setup_messages(system_message)
-                        st.rerun()
+                    setup_messages(system_message)
+                    st.rerun()
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
@@ -111,27 +104,5 @@ else:
                 st.session_state.messages.append(
                     {"role": "assistant", "content": rate_limit_message}
                 )
-                st.rerun()
-
-with st.expander("End Conversation?"):
-    st.text_input(label="Enter your Prolific ID",key="user_id")
-    st.slider('Rate the conversation from Terrible to Perfect. There are no right or wrong answers. Use your subjective judgement', 0, 100, format="", key="score", value=50)
-    if st.button('Submit', key=None, help=None):
-        submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
-
-        user_data={"user_id":st.session_state.user_id,
-                    "conversation":st.session_state.messages,
-                    "score":st.session_state.score,
-                    "time":submission_time}
-        
-        from pymongo.mongo_client import MongoClient
-        from pymongo.server_api import ServerApi
-        with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                db = client.chat
-                collection = db.app
-                collection.insert_one(user_data)  
-                st.session_state.inserted += 1
-
-                setup_messages(system_message)
                 st.rerun()
         
