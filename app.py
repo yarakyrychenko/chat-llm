@@ -2,6 +2,11 @@ import streamlit as st
 from openai import OpenAI
 from datetime import datetime
 
+st.set_page_config(
+    page_title="Chat with me!",
+    page_icon="🤖"
+)
+
 if 'inserted' not in st.session_state:
     st.session_state.inserted = 0
 
