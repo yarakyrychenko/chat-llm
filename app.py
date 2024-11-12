@@ -5,21 +5,20 @@ from datetime import datetime
 if 'inserted' not in st.session_state:
     st.session_state.inserted = 0
 
-
-st.title("Chat LLM")
-st.write(f"You have submitted {st.session_state.inserted} conversations.")
-system_message = st.text_area(
-    "System message (Ignored in Control Condition)",
-      "You are an assistant knowlageable in climate change and what actions an individual should take to help address it.")
-
-def setup_messages(system_message):
+def setup_messages():
     if 'cnd' in st.query_params:
         if st.query_params["cnd"] == "clm":
-            st.session_state.messages = [{ "role": "system", "content": system_message }]
+            st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message if 'system_message' in st.session_state else "You are an assistant knowlageable in climate change and what actions an individual should take to help address it."}]
         else:
             st.session_state.messages = []
     else:
         st.session_state.messages = []
+
+st.title("Chat LLM")
+st.write(f"You have submitted {st.session_state.inserted} conversations.")
+st.text_area(
+    "System message (Ignored in Control Condition)",
+      "You are an assistant knowlageable in climate change and what actions an individual should take to help address it.", key='system_message',on_change=setup_messages)
 
 left, right = st.columns(2)
 
@@ -50,7 +49,7 @@ with right:
                     collection.insert_one(user_data)  
                     st.session_state.inserted += 1
 
-                    setup_messages(system_message)
+                    setup_messages()
                     st.rerun()
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
@@ -59,7 +58,7 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
-    setup_messages(system_message)
+    setup_messages(st.session_state.system_message)
 
 if "max_messages" not in st.session_state:
     st.session_state.max_messages = 20
