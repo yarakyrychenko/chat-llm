@@ -30,7 +30,18 @@ if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
     st.session_state.max_messages = 20
 
-st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
+with st.container(boarder=True):
+    st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
+    if st.button('End Conversation', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
+        user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
+        from pymongo.mongo_client import MongoClient
+        from pymongo.server_api import ServerApi
+        with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
+                    db = client.mist
+                    collection = db.app
+                    collection.insert_one(user_data)  
+                    st.session_state.inserted = True
+
 
 for message in st.session_state.messages:
     if message['role']!='system':
@@ -73,12 +84,4 @@ else:
                 )
                 st.rerun()
 
-if st.button('End Conversation', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
-    user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
-    from pymongo.mongo_client import MongoClient
-    from pymongo.server_api import ServerApi
-    with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                    db = client.mist
-                    collection = db.app
-                    collection.insert_one(user_data)  
-                    st.session_state.inserted20 = True
+
