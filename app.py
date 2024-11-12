@@ -9,7 +9,7 @@ if 'inserted' not in st.session_state:
 st.title("Chat LLM")
 st.write(f"You have submitted {st.session_state.inserted} conversations.")
 system_message = st.text_area(
-    "Text to analyze",
+    "System message",
       "You are an assistant knowlageable in climate change and what actions an individual should take to help address it.")
 
 def setup_messages(system_message):
