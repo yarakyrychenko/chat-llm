@@ -11,27 +11,30 @@ with st.expander("ℹ️ Disclaimer"):
     )
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+system_message = "You are a helpful assistant."
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    if st.query_params["cnd"] == "clm":
+        st.session_state.messages = [{ "role": "system", "content": system_message },]
+        st.write(system_message)
+    else:
+        st.session_state.messages = []
 
 if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
     st.session_state.max_messages = 20
 
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    if message['role']!='system':
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
 if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
-        """Notice: The maximum message limit for this demo version has been reached. We value your interest!
-        We encourage you to experience further interactions by building your own application with instructions
-        from Streamlit's [Build a basic LLM chat app](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)
-        tutorial. Thank you for your understanding."""
+        """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
     )
 
 else:
