@@ -39,6 +39,17 @@ def setup_messages():
     else:
         st.session_state.messages = []
 
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+if "openai_model" not in st.session_state:
+    st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
+
+if "messages" not in st.session_state:
+    setup_messages()
+
+if "max_messages" not in st.session_state:
+    st.session_state.max_messages = 20
+
 st.title("Chat with me!")
 st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
 #st.text_area(
@@ -77,17 +88,6 @@ with right:
 
                     setup_messages()
                     st.rerun()
-
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
-
-if "messages" not in st.session_state:
-    setup_messages()
-
-if "max_messages" not in st.session_state:
-    st.session_state.max_messages = 20
 
 for message in st.session_state.messages:
     if message['role']!='system':
