@@ -73,6 +73,7 @@ with st.container():
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
+with st.container():
     if len(st.session_state.messages) >= st.session_state.max_messages:
         st.info(
             """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
