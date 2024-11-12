@@ -113,7 +113,7 @@ with st.container():
 
 with st.expander("End Conversation"):
     st.text_input(label="Enter your Prolific ID")
-    st.slider('Rate the conversation. There are no right or wrong answers. Use your subjective judgement', 0, 100, value=("Terrible", "Perfect"), key="score")
+    st.slider('Rate the conversation. There are no right or wrong answers. Use your subjective judgement', 0, 100, format="", key="score")
     if st.button('Submit', key=None, help=None):
         submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
