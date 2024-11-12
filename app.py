@@ -1,6 +1,9 @@
 import streamlit as st
 from openai import OpenAI
 
+if 'inserted' not in st.session_state:
+    st.session_state.inserted = False
+
 st.title("Chat LLM")
 
 left, right = st.columns(2)
@@ -17,14 +20,14 @@ with left:
 with right:
     with st.expander("End Conversation"):
         st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
-        if st.button('Submit', key=None, help=None):
+        if st.button('Submit', key=None, help=None) and st.session_state.inserted == False:
 
             user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
             from pymongo.mongo_client import MongoClient
             from pymongo.server_api import ServerApi
             with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                    db = client.mist
-                    collection = db.chat
+                    db = client.chat
+                    collection = db.app
                     collection.insert_one(user_data)  
                     st.session_state.inserted = True
 
