@@ -1,8 +1,9 @@
 import streamlit as st
 from openai import OpenAI
+from datetime import datetime
 
 if 'inserted' not in st.session_state:
-    st.session_state.inserted = False
+    st.session_state.inserted = 0
 
 st.title("Chat LLM")
 
@@ -20,19 +21,25 @@ with left:
 with right:
     with st.expander("End Conversation"):
         st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
-        if st.button('Submit', key=None, help=None) and st.session_state.inserted == False:
+        if st.button('Submit', key=None, help=None):
+            submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
-            user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
+            user_data={"user_id":st.session_state.user_id,
+                       "conversation":st.session_state.messages,
+                       "time":submission_time}
+            
             from pymongo.mongo_client import MongoClient
             from pymongo.server_api import ServerApi
             with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
                     db = client.chat
                     collection = db.app
                     collection.insert_one(user_data)  
-                    st.session_state.inserted = True
+                    st.session_state.inserted += 1
+                    st.write(f"You have submitted {st.session_state.inserted} conversations.")
+                    st.rerun()
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-system_message = "You are a helpful assistant."
+system_message = "You are an assistant knowlageable in climate change and what actions an individual should take to help address it."
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
@@ -62,7 +69,7 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
     )
 
 else:
-    if prompt := st.chat_input("What is up?"):
+    if prompt := st.chat_input("Ask something..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
