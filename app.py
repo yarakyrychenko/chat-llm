@@ -3,7 +3,7 @@ from openai import OpenAI
 
 st.title("Chat LLM")
 
-left, right = st.columns(2)
+left, right = st.columns(2,vertical_alignment="bottom")
 
 with left:
     with st.expander("ℹ️ Disclaimer"):
