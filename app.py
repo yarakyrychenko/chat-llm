@@ -44,13 +44,12 @@ left, right = st.columns(2)
 
 with left:
     with st.expander("ℹ️ Information"):
-        st.caption(
+        st.markdown(
         """- Chat with a language model by typing in the chat box. 
         
-        - When you are done with a conversation, submit it using the End Conversation tab. 
+- When you are done with a conversation, submit it using the End Conversation tab. 
         
-        - You can only type up to ten messages per conversation and the model might be unavialble at times due to high demand.
-        """
+- You can only type up to ten messages per conversation and the model might be unavialble at times due to high demand."""
         )
 
 with right:
