@@ -17,8 +17,9 @@ with left:
 with left:
     with st.expander("End Conversation"):
         st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
-        if st.button('Submit', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
-        user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
+        if st.button('Submit', key=None, help=None):
+
+            user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
             from pymongo.mongo_client import MongoClient
             from pymongo.server_api import ServerApi
             with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
