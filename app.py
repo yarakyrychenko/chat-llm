@@ -8,8 +8,11 @@ if 'inserted' not in st.session_state:
 
 st.title("Chat LLM")
 st.write(f"You have submitted {st.session_state.inserted} conversations.")
+system_message = st.text_area(
+    "Text to analyze",
+      "You are an assistant knowlageable in climate change and what actions an individual should take to help address it.")
 
-def setup_messages():
+def setup_messages(system_message):
     if 'cnd' in st.query_params:
         if st.query_params["cnd"] == "clm":
             st.session_state.messages = [{ "role": "system", "content": system_message }]
@@ -48,17 +51,16 @@ with right:
                     collection.insert_one(user_data)  
                     st.session_state.inserted += 1
 
-                    setup_messages()
+                    setup_messages(system_message)
                     st.rerun()
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-system_message = "You are an assistant knowlageable in climate change and what actions an individual should take to help address it."
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
-    setup_messages()
+    setup_messages(system_message)
 
 if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
