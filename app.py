@@ -23,7 +23,7 @@ system_string = """You are an expert at explaining and motivating climate action
    - Showcase public efforts and foster a sense of collective efficacy, reinforcing social norms around climate action.
    - Frame climate policies in terms of potential gains rather than losses.
 
-Respond with at most 100 words. Use bullet points and follow up questions when necessary. Provide specific information and avoid general statements."""
+Respond with at most 100 words. Use bullet points and follow up questions when necessary. Provide specific information and avoid repeating yourself or saying general statements."""
 
 def setup_messages():
     if 'cnd' in st.query_params:
@@ -36,9 +36,9 @@ def setup_messages():
 
 st.title("Chat with me!")
 st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
-st.text_area(
-    "System message (Ignored in Control Condition)",
-    system_string, key='system_message',on_change=setup_messages)
+#st.text_area(
+#    "System message (Ignored in Control Condition)",
+#    system_string, key='system_message',on_change=setup_messages)
 
 left, right = st.columns(2)
 
