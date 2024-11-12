@@ -2,13 +2,30 @@ import streamlit as st
 from openai import OpenAI
 
 st.title("Chat LLM")
-with st.expander("ℹ️ Disclaimer"):
-    st.caption(
+
+left, right = st.columns(2)
+
+with left:
+    with st.expander("ℹ️ Disclaimer"):
+        st.caption(
         """This demo is designed to
         process a maximum of 10 interactions and may be unavailable if too many
         people use the service concurrently. Thank you for your understanding.
         """
-    )
+        )
+
+with left:
+    with st.expander("End Conversation"):
+        st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
+        if st.button('Submit', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
+        user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
+            from pymongo.mongo_client import MongoClient
+            from pymongo.server_api import ServerApi
+            with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
+                    db = client.mist
+                    collection = db.app
+                    collection.insert_one(user_data)  
+                    st.session_state.inserted = True
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 system_message = "You are a helpful assistant."
@@ -29,19 +46,6 @@ if "messages" not in st.session_state:
 if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
     st.session_state.max_messages = 20
-
-with st.container(border=True):
-    st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
-    if st.button('End Conversation', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
-        user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
-        from pymongo.mongo_client import MongoClient
-        from pymongo.server_api import ServerApi
-        with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                    db = client.mist
-                    collection = db.app
-                    collection.insert_one(user_data)  
-                    st.session_state.inserted = True
-
 
 for message in st.session_state.messages:
     if message['role']!='system':
