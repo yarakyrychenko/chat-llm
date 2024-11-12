@@ -45,9 +45,9 @@ left, right = st.columns(2)
 with left:
     with st.expander("ℹ️ Information"):
         st.markdown(
-        """- Chat with a language model by typing in the chat box. 
-- When you are done with a conversation, submit it using the *End Conversation* tab. 
-- You can only type up to ten messages per conversation and the model might be unavialble at times due to high demand."""
+        """- Type in the chat box to start a conversation.
+- Use the *End Conversation* tab to finish and submit a conversation.
+- Each conversation allows up to 10 messages, and model availability may vary during peak times."""
         )
 
 with right:
