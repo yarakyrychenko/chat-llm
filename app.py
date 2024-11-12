@@ -103,7 +103,8 @@ with st.container():
                     st.session_state.messages.append(
                         {"role": "assistant", "content": response}
                     )
-                    with st.expander("End Conversation"):
+                    if False:
+                    # with st.expander("End Conversation"):
                         st.text_input(label="Enter your Prolific ID",key="user_id")
                         st.slider('Rate the conversation from Terrible to Perfect. There are no right or wrong answers. Use your subjective judgement', 0, 100, format="", key="score", value=50)
                         if st.button('Submit', key=None, help=None):
