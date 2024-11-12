@@ -9,14 +9,13 @@ if 'inserted' not in st.session_state:
 st.title("Chat LLM")
 st.write(f"You have submitted {st.session_state.inserted} conversations.")
 system_message = st.text_area(
-    "System message",
+    "System message (Ignored in Control Condition)",
       "You are an assistant knowlageable in climate change and what actions an individual should take to help address it.")
 
 def setup_messages(system_message):
     if 'cnd' in st.query_params:
         if st.query_params["cnd"] == "clm":
             st.session_state.messages = [{ "role": "system", "content": system_message }]
-            st.write(system_message)
         else:
             st.session_state.messages = []
     else:
@@ -25,7 +24,7 @@ def setup_messages(system_message):
 left, right = st.columns(2)
 
 #with left:
-if True:
+if False:
     with st.expander("ℹ️ Disclaimer"):
         st.caption(
         """This demo is designed to
@@ -113,7 +112,7 @@ with st.container():
 
 with st.expander("End Conversation"):
     st.text_input(label="Enter your Prolific ID")
-    st.slider('Rate the conversation. There are no right or wrong answers. Use your subjective judgement', 0, 100, format="", key="score")
+    st.slider('Rate the conversation from Terrible to Perfect. There are no right or wrong answers. Use your subjective judgement', 0, 100, format="", key="score", value=50)
     if st.button('Submit', key=None, help=None):
         submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
@@ -133,3 +132,8 @@ with st.expander("End Conversation"):
                 setup_messages(system_message)
                 st.rerun()
 
+with st.expander("ℹ️ Disclaimer"):
+    st.caption(
+    """This app may be unavailable if too many people are using it currently. You can only submit up to ten messages per conversation. Thank you for your understanding.
+    """
+    )
