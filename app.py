@@ -30,7 +30,7 @@ if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
     st.session_state.max_messages = 20
 
-with st.container(boarder=True):
+with st.container(border=True):
     st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
     if st.button('End Conversation', key=None, help=None, type="secondary", icon=None, disabled=False, use_container_width=False):
         user_data={"user_id":st.session_state.user_id,"conversation":st.session_state.messages}
