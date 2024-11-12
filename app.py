@@ -3,7 +3,7 @@ from openai import OpenAI
 
 st.title("Chat LLM")
 
-left, right = st.columns(2,vertical_alignment="bottom")
+left, right = st.columns(2)
 
 with left:
     with st.expander("ℹ️ Disclaimer"):
@@ -14,7 +14,7 @@ with left:
         """
         )
 
-with rigth:
+with right:
     with st.expander("End Conversation"):
         st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
         if st.button('Submit', key=None, help=None):
@@ -24,7 +24,7 @@ with rigth:
             from pymongo.server_api import ServerApi
             with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
                     db = client.mist
-                    collection = db.app
+                    collection = db.chat
                     collection.insert_one(user_data)  
                     st.session_state.inserted = True
 
