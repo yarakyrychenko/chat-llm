@@ -5,7 +5,19 @@ from datetime import datetime
 if 'inserted' not in st.session_state:
     st.session_state.inserted = 0
 
+
 st.title("Chat LLM")
+st.write(f"You have submitted {st.session_state.inserted} conversations.")
+
+def setup_messages():
+    if 'cnd' in st.query_params:
+        if st.query_params["cnd"] == "clm":
+            st.session_state.messages = [{ "role": "system", "content": system_message }]
+            st.write(system_message)
+        else:
+            st.session_state.messages = []
+    else:
+        st.session_state.messages = []
 
 left, right = st.columns(2)
 
@@ -35,7 +47,8 @@ with right:
                     collection = db.app
                     collection.insert_one(user_data)  
                     st.session_state.inserted += 1
-                    st.write(f"You have submitted {st.session_state.inserted} conversations.")
+
+                    setup_messages()
                     st.rerun()
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
@@ -45,14 +58,7 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
-    if 'cnd' in st.query_params:
-        if st.query_params["cnd"] == "clm":
-            st.session_state.messages = [{ "role": "system", "content": system_message }]
-            st.write(system_message)
-        else:
-            st.session_state.messages = []
-    else:
-        st.session_state.messages = []
+    setup_messages()
 
 if "max_messages" not in st.session_state:
     # Counting both user and assistant messages, so 10 rounds of conversation
