@@ -14,7 +14,7 @@ with left:
         """
         )
 
-with left:
+with rigth:
     with st.expander("End Conversation"):
         st.session_state.user_id = st.text_input(label="Enter your Prolific ID")
         if st.button('Submit', key=None, help=None):
