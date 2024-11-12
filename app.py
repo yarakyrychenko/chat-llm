@@ -59,7 +59,7 @@ with right:
     with st.expander("⏹️ End Conversation"):
         st.text_input(label="Enter your Prolific ID",key="user_id")
         st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
-        if st.button('Submit', key=None, help=None):
+        if st.button('Submit', key=None, help=None, disabled = len(st.session_state.messages) < 2):
             submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
             user_data={"user_id":st.session_state.user_id,
