@@ -16,13 +16,13 @@ system_message = "You are a helpful assistant."
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
-if 'cnd' not in st.query_params:
-    st.query_params["cnd"] = "n"
-
 if "messages" not in st.session_state:
-    if st.query_params["cnd"] == "clm":
-        st.session_state.messages = [{ "role": "system", "content": system_message },]
-        st.write(system_message)
+    if 'cnd' in st.query_params:
+        if st.query_params["cnd"] == "clm":
+            st.session_state.messages = [{ "role": "system", "content": system_message },]
+            st.write(system_message)
+        else:
+            st.session_state.messages = []
     else:
         st.session_state.messages = []
 
