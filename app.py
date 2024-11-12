@@ -58,7 +58,7 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
-    setup_messages(st.session_state.system_message)
+    setup_messages()
 
 if "max_messages" not in st.session_state:
     st.session_state.max_messages = 20
