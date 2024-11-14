@@ -23,7 +23,7 @@ if 'inserted' not in st.session_state:
     if 'p' not in st.query_params:
         st.query_params['p'] = 't'
 
-    st.session_state.prompt = None
+    st.session_state.prompt = ''
 
     st.session_state.inserted = 0
     
@@ -90,7 +90,7 @@ elif st.query_params['p'] == 't' and st.session_state.user_info == '':
 else:
     st.chat_input("Ask something...",key='prompt')
 
-if st.session_state.prompt:
+if st.session_state.prompt != '':
     prompt = st.session_state.prompt
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
