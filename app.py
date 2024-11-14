@@ -82,13 +82,12 @@ for message in st.session_state.messages:
 
 if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
-        """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
+        """The maximum message limit for this demo version has been reached. Thank you for your understanding."""
     )
-
 elif st.query_params['p'] == 't' and st.session_state.user_info == '':
     st.info('Please enter a short summary of your personal circumstances to start the conversation.')
-    
-st.chat_input("Ask something...",key='prompt')
+else:
+    st.chat_input("Ask something...",key='prompt')
 
 if st.session_state.prompt:
     prompt = st.session_state.prompt
