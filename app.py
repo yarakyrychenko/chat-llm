@@ -125,7 +125,7 @@ else:
     with left:
         st.chat_input("Ask something...",key='prompt')
 
-if len(st.session_state.prompt) > 0:
+if st.session_state.prompt:
     prompt = st.session_state.prompt
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
