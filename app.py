@@ -88,7 +88,7 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
 elif st.query_params['p'] == 't' and st.session_state.user_info == '':
     st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 else:
-    st.chat_input("Ask something...",key='prompt')
+    st.session_state.prompt = st.chat_input("Ask something...")
 
 if st.session_state.prompt != '':
     prompt = st.session_state.prompt
