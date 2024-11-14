@@ -120,26 +120,26 @@ if st.session_state.prompt:
                 {"role": "assistant", "content": rate_limit_message}
             )
             st.rerun()
+if len(st.session_state.messages) > 2:
+    with st.expander("⏹️ End Conversation"):
+        st.text_input(label="Enter your Prolific ID",key="user_id")
+        st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
+        if st.button('Submit', key=None, help=None, use_container_width=True):
+            submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
-with st.expander("⏹️ End Conversation"):
-    st.text_input(label="Enter your Prolific ID",key="user_id")
-    st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
-    if st.button('Submit', key=None, help=None, disabled = len(st.session_state.messages) < 2, use_container_width=True):
-        submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
+            user_data={"user_id":st.session_state.user_id,
+                        "conversation":st.session_state.messages,
+                        "score":st.session_state.score,
+                        "time":submission_time}
+            
+            from pymongo.mongo_client import MongoClient
+            from pymongo.server_api import ServerApi
+            with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
+                    db = client.chat
+                    collection = db.app
+                    collection.insert_one(user_data)  
+                    st.session_state.inserted += 1
 
-        user_data={"user_id":st.session_state.user_id,
-                    "conversation":st.session_state.messages,
-                    "score":st.session_state.score,
-                    "time":submission_time}
-        
-        from pymongo.mongo_client import MongoClient
-        from pymongo.server_api import ServerApi
-        with MongoClient(st.secrets["mongo"],server_api=ServerApi('1')) as client:
-                db = client.chat
-                collection = db.app
-                collection.insert_one(user_data)  
-                st.session_state.inserted += 1
-
-                setup_messages()
-                st.rerun()
+                    setup_messages()
+                    st.rerun()
     
