@@ -145,6 +145,8 @@ def submit():
                 st.rerun()
 
 if len(st.session_state.messages) > 2:
-    if st.button("⏹️ End Conversation"):
-        submit()
+    columns = st.columns((1,1,1,1))
+    with columns[3]:
+        if st.button("⏹️ End Conversation",use_container_width=True):
+            submit()
     
