@@ -57,6 +57,29 @@ if 'messages' not in st.session_state:
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
+### App interface 
+
+st.title("Chat with me!")
+with st.expander("ℹ️ Information"):
+        st.markdown(
+        """- Type in the chat box to start a conversation.
+- Use the *End Conversation* tab to finish and submit a conversation.
+- Each conversation allows up to 10 messages, and model availability may vary during peak times."""
+        )
+st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
+
+if st.query_params['p'] == 't':
+    st.text_area(
+        "Write 3 sentences about yourself.",
+        '', key='user_info',on_change=setup_messages)
+
+# st.write(st.session_state.system_message)
+
+for message in st.session_state.messages:
+    if message['role']!='system':
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
 def ask_llm():
     prompt = st.session_state.prompt
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -87,30 +110,7 @@ def ask_llm():
                 {"role": "assistant", "content": rate_limit_message}
             )
             st.rerun()
-
-### App interface 
-
-st.title("Chat with me!")
-with st.expander("ℹ️ Information"):
-        st.markdown(
-        """- Type in the chat box to start a conversation.
-- Use the *End Conversation* tab to finish and submit a conversation.
-- Each conversation allows up to 10 messages, and model availability may vary during peak times."""
-        )
-st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
-
-if st.query_params['p'] == 't':
-    st.text_area(
-        "Write 3 sentences about yourself.",
-        '', key='user_info',on_change=setup_messages)
-
-# st.write(st.session_state.system_message)
-
-for message in st.session_state.messages:
-    if message['role']!='system':
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
+            
 if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
         """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
