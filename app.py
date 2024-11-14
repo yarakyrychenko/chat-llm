@@ -7,54 +7,65 @@ st.set_page_config(
     page_icon="🤖"
 )
 
+### Setting up the session state 
+
 if 'inserted' not in st.session_state:
+    ### read in txts
+    with open('base.txt', 'r') as file:
+        base_text = file.read()
+    with open('knowledge.txt', 'r') as file:
+        knowledge_text = file.read()
+    with open('personalization.txt', 'r') as file:
+        personalization_text = file.read()
+
+    if 'k' not in st.query_params:
+        st.query_params['k'] = 't'
+    if 'p' not in st.query_params:
+        st.query_params['p'] = 't'
+
     st.session_state.inserted = 0
-
-system_string = """You are an expert at explaining and motivating climate action. Try to find a way the user can engage in climate action and motivate them. Respond in line with the following principles:
-
-1. When evidencing the reality and urgency of climate change:
-   - Highlight the high degree of scientific consensus on human-caused climate change.
-   - Avoid endorsing misinformation and minimize inaccurate information on climate change.
-   - Focus on impacts of climate change that are timely and local to the user.
-
-3. When discussing climate change with someone concerned about the issue:
-   - Emphasize potential solutions and individual and collective actions to reduce climate change.
-   - Highlight that many people, organizations, and leaders share the user's concerns, reducing isolation and enhancing support.
-  - Emphasize that collective and political actions can drive significant societal changes while encouraging individual/household efforts.
-   - Highlight the feasibility of engaging in climate action.
-
-4. When discussing solutions to climate change:
-   - Prioritize high-impact behaviors (e.g., reducing air travel) over low-impact actions (e.g., recycling).
-   - Showcase public efforts and foster a sense of collective efficacy, reinforcing social norms around climate action.
-   - Frame climate policies in terms of potential gains rather than losses.
-
-Respond with at most 100 words. Use bullet points and follow up questions when necessary. Provide specific information and avoid repeating yourself or saying general statements."""
-
-def setup_messages():
-    if 'cnd' in st.query_params:
-        if st.query_params["cnd"] == "clm":
-            st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message if 'system_message' in st.session_state else system_string}]
-        else:
-            st.session_state.messages = []
-    else:
-        st.session_state.messages = []
-
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
 
-if "messages" not in st.session_state:
-    setup_messages()
-
 if "max_messages" not in st.session_state:
     st.session_state.max_messages = 20
 
+if 'user_info' not in st.session_state:
+    st.session_state.user_info = ''
+
+def setup_messages():
+    ### k = knowledge ('f' none, otherwise climate)
+    ### p = personalization ('f' none, otherwise personalization)
+
+    if st.query_params["k"] == "f" and st.query_params["p"] == "f":
+        st.session_state.system_message = base_text 
+    elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
+        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
+        st.session_state.system_message = preamble + '\n\n' + knowledge_text + '\n\n' + base_text
+    elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
+        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
+        st.session_state.system_message = preamble + '\n\n' + base_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+    else:
+        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
+        st.session_state.system_message = preamble + '\n\n' + knowledge_text + '\n\n' + base_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+
+    st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
+
+if 'messages' not in st.session_state:
+    setup_messages()
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+### App interface 
+
 st.title("Chat with me!")
 st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
-#st.text_area(
-#    "System message (Ignored in Control Condition)",
-#    system_string, key='system_message',on_change=setup_messages)
+
+if st.query_params['p'] == 't':
+    st.text_area(
+        "Write 3 sentences about yourself.",
+        '', key='user_info',on_change=setup_messages)
 
 left, right = st.columns(2)
 
@@ -99,6 +110,9 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
         """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
     )
 
+elif st.query_params['p'] == 't' and st.session_state.user_info == '':
+    st.info('Please enter a short summary of your personal circumstances to start the conversation.')
+    
 else:
 
     if prompt := st.chat_input("Ask something..."):

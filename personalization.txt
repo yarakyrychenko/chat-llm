@@ -1,0 +1,6 @@
+# User Context
+
+The user has told you this about their circumstances: 
+[USER_INFO]
+
+Provide information and advice that is specific to the user's context.
