@@ -110,7 +110,7 @@ def ask_llm():
                 {"role": "assistant", "content": rate_limit_message}
             )
             st.rerun()
-            
+
 if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
         """Notice: The maximum message limit for this demo version has been reached. Thank you for your understanding."""
@@ -123,7 +123,38 @@ else:
     left, right = st.columns(2)
 
     with left:
-        st.chat_input("Ask something...",key='prompt',on_submit=ask_llm)
+        st.chat_input("Ask something...",key='prompt')
+
+if len(st.session_state.prompt) > 0:
+    prompt = st.session_state.prompt
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        try:
+            stream = client.chat.completions.create(
+                model=st.session_state["openai_model"],
+                messages=[
+                    {"role": m["role"], "content": m["content"]}
+                    for m in st.session_state.messages
+                ],
+                stream=True,
+            )
+            response = st.write_stream(stream)
+            st.session_state.messages.append(
+                {"role": "assistant", "content": response}
+            )
+        except:
+            st.session_state.max_messages = len(st.session_state.messages)
+            rate_limit_message = """
+                Oops! Sorry, I can't talk now. Too many people have used
+                this service recently.
+            """
+            st.session_state.messages.append(
+                {"role": "assistant", "content": rate_limit_message}
+            )
+            st.rerun()
 
     with right:
         with st.expander("⏹️ End Conversation"):
