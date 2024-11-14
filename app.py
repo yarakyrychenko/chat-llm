@@ -12,11 +12,11 @@ st.set_page_config(
 if 'inserted' not in st.session_state:
     ### read in txts
     with open('base.txt', 'r') as file:
-        base_text = file.read()
+        st.session_state.base_text = file.read()
     with open('knowledge.txt', 'r') as file:
-        knowledge_text = file.read()
+        st.session_state.knowledge_text = file.read()
     with open('personalization.txt', 'r') as file:
-        personalization_text = file.read()
+        st.session_state.personalization_text = file.read()
 
     if 'k' not in st.query_params:
         st.query_params['k'] = 't'
@@ -39,17 +39,18 @@ def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
 
     if st.query_params["k"] == "f" and st.query_params["p"] == "f":
-        st.session_state.system_message = base_text 
+        st.session_state.system_message = st.session_state.base_text 
     elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
         preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
-        st.session_state.system_message = preamble + '\n\n' + knowledge_text + '\n\n' + base_text
+        st.session_state.system_message = preamble + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.base_text
     elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
         preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
-        st.session_state.system_message = preamble + '\n\n' + base_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = preamble + '\n\n' + st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
     else:
         preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
-        st.session_state.system_message = preamble + '\n\n' + knowledge_text + '\n\n' + base_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = preamble + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
 
+    st.write(st.session_state.system_message)
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
 
 if 'messages' not in st.session_state:
