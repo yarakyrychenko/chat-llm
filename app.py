@@ -39,7 +39,8 @@ def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
 
     if st.query_params["k"] == "f" and st.query_params["p"] == "f":
-        st.session_state.system_message = st.session_state.base_text 
+        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
+        st.session_state.system_message = preamble + '\n\n' + st.session_state.base_text 
     elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
         preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
         st.session_state.system_message = preamble + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.base_text
