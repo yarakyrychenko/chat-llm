@@ -23,12 +23,12 @@ if 'inserted' not in st.session_state:
     if 'p' not in st.query_params:
         st.query_params['p'] = 't'
 
+    st.session_state.prompt = None
+
     st.session_state.inserted = 0
-
-if "openai_model" not in st.session_state:
+    
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
-
-if "max_messages" not in st.session_state:
+    
     st.session_state.max_messages = 20
 
 if 'user_info' not in st.session_state:
@@ -120,7 +120,7 @@ if st.session_state.prompt:
             )
             st.rerun()
 
-@st.dialog('Submit')
+@st.dialog('Submit conversation')
 def submit():
     st.text_input(label="Enter your Prolific ID",key="user_id")
     st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
