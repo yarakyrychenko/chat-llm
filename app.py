@@ -82,10 +82,10 @@ for message in st.session_state.messages:
 
 if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
-        """The maximum message limit for this demo version has been reached. Thank you for your understanding."""
+        "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
 elif st.query_params['p'] == 't' and st.session_state.user_info == '':
-    st.info('Please enter a short summary of your personal circumstances to start the conversation.')
+    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 else:
     st.chat_input("Ask something...",key='prompt')
 
@@ -130,7 +130,8 @@ def submit():
         user_data={"user_id":st.session_state.user_id,
                     "conversation":st.session_state.messages,
                     "score":st.session_state.score,
-                    "time":submission_time}
+                    "time":submission_time,
+                    "user_info":st.session_state.user_info}
         
         from pymongo.mongo_client import MongoClient
         from pymongo.server_api import ServerApi
