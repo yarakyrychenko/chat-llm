@@ -18,18 +18,14 @@ if 'inserted' not in st.session_state:
     with open('personalization.txt', 'r') as file:
         st.session_state.personalization_text = file.read()
 
-    if 'k' not in st.query_params:
-        st.query_params['k'] = 't'
-    if 'p' not in st.query_params:
-        st.query_params['p'] = 't'
-
-    st.session_state.prompt = ''
-
     st.session_state.inserted = 0
-    
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
-    
     st.session_state.max_messages = 20
+
+if 'k' not in st.query_params:
+    st.query_params['k'] = 't'
+if 'p' not in st.query_params:
+    st.query_params['p'] = 't'
 
 if 'user_info' not in st.session_state:
     st.session_state.user_info = ''
@@ -87,11 +83,8 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
     )
 elif st.query_params['p'] == 't' and st.session_state.user_info == '':
     st.info('Please enter a short summary of your personal circumstances to start a conversation.')
-else:
-    st.session_state.prompt != st.chat_input("Ask something...")
 
-if st.session_state.prompt != '':
-    prompt = st.session_state.prompt
+elif prompt := st.chat_input("Ask something..."):   
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
