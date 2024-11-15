@@ -112,15 +112,12 @@ elif prompt := st.chat_input("Ask something..."):
             )
             st.rerun()
 
-def submit_off():
-    return st.session_state.user_id=="" or st.session_state.score==50
-
 @st.dialog('Submit conversation')
 def submit():
     st.text_input(label="Enter your Prolific ID",key="user_id")
     st.slider('You must rate the conversation from *Terrible* to *Perfect* to submit.', 0, 100, format="", key="score", value=50)
     st.text_area('Any feedback?',key="feedback")
-    if st.button('Submit', key=None, help=None, use_container_width=True, disabled=submit_off):
+    if st.button('Submit', key=None, help=None, use_container_width=True, disabled=st.session_state.user_id=="" or st.session_state.score==50):
         submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
         user_data={"user_id":st.session_state.user_id,
