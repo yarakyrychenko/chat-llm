@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 from datetime import datetime
+import time
 
 st.set_page_config(
     page_title="Chat with me!",
@@ -137,6 +138,7 @@ def submit():
                 
                 st.success('Your conversation has been submitted.', icon="✅")
 
+                time.sleep(1)
                 setup_messages()
                 st.rerun()
 
