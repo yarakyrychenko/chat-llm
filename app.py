@@ -35,17 +35,13 @@ def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
 
     if st.query_params["k"] == "f" and st.query_params["p"] == "f":
-        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
-        st.session_state.system_message = preamble + '\n\n' + st.session_state.base_text 
+        st.session_state.system_message = st.session_state.base_text 
     elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
-        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective.'''
-        st.session_state.system_message = preamble + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.base_text
+        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.knowledge_text
     elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
-        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
-        st.session_state.system_message = preamble + '\n\n' + st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
     else:
-        preamble = '''You are an expert at explaining and motivating climate action, and you advise the user on what they can do to help fight climate change in their specific circumstances, which are mentioned in the user context below. Your goal is to find a way to engage the user in climate action and educate them on what climate actions are the most effective in their specific situation.'''
-        st.session_state.system_message = preamble + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
 
@@ -57,20 +53,21 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 ### App interface 
 
 st.title("Chat with me!")
-with st.expander("ℹ️ Information"):
+with st.expander("Information"):
         st.markdown(
-        """- Type in the chat box to start a conversation.
-- Use the *End Conversation* tab to finish and submit a conversation.
-- Each conversation allows up to 10 messages, and model availability may vary during peak times."""
-        )
-st.write(f"You have submitted {st.session_state.inserted} conversation(s).")
+        f"""- Type in the chat box to start a conversation.
+- Use the *End Conversation* button to finish and submit a conversation.
+- Each conversation allows up to 10 messages.
+- You have submitted {st.session_state.inserted} conversation(s).
+- The website may be unavailable if too many people are using it at the same time."""
+)
 
 if st.query_params['p'] == 't':
     st.text_area(
         "Write 3 sentences about yourself.",
         '', key='user_info',on_change=setup_messages)
 
-# st.write(st.session_state.system_message)
+st.write(st.session_state.system_message)
 
 for message in st.session_state.messages:
     if message['role']!='system':
@@ -81,6 +78,7 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
+
 elif st.query_params['p'] == 't' and st.session_state.user_info == '':
     st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 
@@ -117,7 +115,8 @@ elif prompt := st.chat_input("Ask something..."):
 @st.dialog('Submit conversation')
 def submit():
     st.text_input(label="Enter your Prolific ID",key="user_id")
-    st.slider('Rate the conversation from *Terrible* to *Perfect*. There are no right or wrong answers.', 0, 100, format="", key="score", value=50)
+    st.slider('Rate the conversation from *Terrible* to *Perfect*.', 0, 100, format="", key="score", value=50)
+    st.text_area('Any feedback?',key="feedback")
     if st.button('Submit', key=None, help=None, use_container_width=True):
         submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
 
@@ -125,7 +124,8 @@ def submit():
                     "conversation":st.session_state.messages,
                     "score":st.session_state.score,
                     "time":submission_time,
-                    "user_info":st.session_state.user_info}
+                    "user_info":st.session_state.user_info,
+                    "feedback":st.session_state.feedback}
         
         from pymongo.mongo_client import MongoClient
         from pymongo.server_api import ServerApi
@@ -141,6 +141,6 @@ def submit():
 if len(st.session_state.messages) > 2:
     columns = st.columns((1,1,1))
     with columns[2]:
-        if st.button("⏹️ End Conversation",use_container_width=True):
+        if st.button("End Conversation",use_container_width=True):
             submit()
     
