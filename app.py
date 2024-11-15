@@ -58,15 +58,15 @@ st.title("Chat with me!")
 with st.expander("Information"):
         st.markdown(
         f"""- Type in the chat box to start a conversation.
-- Use the *End Conversation* button to finish and submit a conversation.
+- Use the *End Conversation* button to finish and submit.
 - Each conversation allows up to 10 messages.
 - You have submitted {st.session_state.inserted} conversation(s).
-- The website may be unavailable if too many people are using it at the same time."""
+- The website may be unavailable if too many people use it simultaneously."""
 )
 
 if st.query_params['p'] == 't':
     st.text_area(
-        "Write 3 sentences about yourself.",
+        "Write at least three sentences about yourself.",
         '', key='user_info',on_change=setup_messages)
 
 # st.write(st.session_state.system_message)
