@@ -69,7 +69,7 @@ if st.query_params['p'] == 't':
         "Write 3 sentences about yourself.",
         '', key='user_info',on_change=setup_messages)
 
-st.write(st.session_state.system_message)
+# st.write(st.session_state.system_message)
 
 for message in st.session_state.messages:
     if message['role']!='system':
