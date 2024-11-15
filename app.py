@@ -134,6 +134,8 @@ def submit():
                 collection = db.app
                 collection.insert_one(user_data)  
                 st.session_state.inserted += 1
+                
+                st.success('Your conversation has been submitted.', icon="✅")
 
                 setup_messages()
                 st.rerun()
