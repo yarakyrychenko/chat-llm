@@ -22,6 +22,7 @@ if 'inserted' not in st.session_state:
     st.session_state.inserted = 0
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
     st.session_state.max_messages = 20
+    st.session_state.user_id = ''
 
 if 'k' not in st.query_params:
     st.query_params['k'] = 't'
@@ -115,7 +116,7 @@ elif prompt := st.chat_input("Ask something..."):
 
 @st.dialog('Submit conversation')
 def submit():
-    st.text_input(label="Enter your Prolific ID",key="user_id")
+    st.text_input(label="Enter your Prolific ID",value=st.session_state.user_id, key="user_id")
     st.slider('You must rate the conversation from *Terrible* to *Perfect* to submit.', 0, 100, format="", key="score", value=50)
     st.text_area('Any feedback?',key="feedback")
     if st.button('Submit', key=None, help=None, use_container_width=True, disabled=st.session_state.user_id=="" or st.session_state.score==50):
