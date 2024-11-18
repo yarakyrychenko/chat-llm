@@ -24,6 +24,8 @@ if 'inserted' not in st.session_state:
     st.session_state.max_messages = 20
     st.session_state.user_id = ''
 
+    st.session_state.submitted = False
+
 if 'k' not in st.query_params:
     st.query_params['k'] = 't'
 if 'p' not in st.query_params:
@@ -70,7 +72,7 @@ with st.form("my_form"):
     st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info')
-    submitted = st.form_submit_button("Submit")
+    st.session_state.submitted = st.form_submit_button("Submit")
 
 # st.write(st.session_state.system_message)
 
