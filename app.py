@@ -39,11 +39,11 @@ def setup_messages():
     if st.query_params["k"] == "f" and st.query_params["p"] == "f":
         st.session_state.system_message = st.session_state.base_text 
     elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
-        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.knowledge_text
+        st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + st.session_state.base_text
     elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
-        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
-        st.session_state.system_message = st.session_state.base_text + '\n\n' + st.session_state.knowledge_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)
+        st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
 
@@ -64,10 +64,13 @@ with st.expander("Information"):
 - The website may be unavailable if too many people use it simultaneously."""
 )
 
-if st.query_params['p'] == 't':
+with st.form("my_form"):
+    st.write("Inside the form")
+    st.slider("How old are you?",0,130,key="age")
     st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info',on_change=setup_messages)
+    submitted = st.form_submit_button("Submit")
 
 # st.write(st.session_state.system_message)
 
@@ -81,10 +84,10 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
 
-elif st.query_params['p'] == 't' and st.session_state.user_info == '':
-    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
+#elif st.query_params['p'] == 't' and st.session_state.user_info == '':
+#    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 
-elif prompt := st.chat_input("Ask something..."):   
+elif prompt := st.chat_input("Ask something...") and submitted:   
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -127,7 +130,9 @@ def submit():
                     "score":st.session_state.score,
                     "time":submission_time,
                     "user_info":st.session_state.user_info,
-                    "feedback":st.session_state.feedback}
+                    "feedback":st.session_state.feedback,
+                    "condition":f"k{st.query_params['k']}p{st.query_params['p']}",
+                    "age":st.session_state.age}
         
         from pymongo.mongo_client import MongoClient
         from pymongo.server_api import ServerApi
