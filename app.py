@@ -66,12 +66,13 @@ with st.expander("Information"):
 - The website may be unavailable if too many people use it simultaneously."""
 )
 
-with st.form("Form"):
-    st.slider("How old are you?",0,130,key="age")
-    st.text_area(
+with st.expander("Form"):
+    with st.form("Form",border=False):
+        st.slider("How old are you?",0,130,key="age")
+        st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info')
-    submitted = st.form_submit_button("Submit")
+        submitted = st.form_submit_button("Submit")
 
 # st.write(st.session_state.system_message)
 
