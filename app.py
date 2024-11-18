@@ -85,11 +85,8 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
 
-#elif st.query_params['p'] == 't' and st.session_state.user_info == '':
-#    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
-
-elif not submitted:
-    pass
+elif st.session_state.user_info == '':
+   st.info('Please submit the form above to start a conversation.')
 
 elif prompt := st.chat_input("Ask something..."):   
     st.session_state.messages.append({"role": "user", "content": prompt})
