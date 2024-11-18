@@ -89,35 +89,36 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
 #elif st.query_params['p'] == 't' and st.session_state.user_info == '':
 #    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 
-elif prompt := st.chat_input("Ask something...") and submitted:   
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+elif st.session_state.submitted:
+    if prompt := st.chat_input("Ask something..."):   
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
-    with st.chat_message("assistant"):
-        try:
-            stream = client.chat.completions.create(
-                model=st.session_state["openai_model"],
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-                stream=True,
-            )
-            response = st.write_stream(stream)
-            st.session_state.messages.append(
-                {"role": "assistant", "content": response}
-            )
-        except:
-            st.session_state.max_messages = len(st.session_state.messages)
-            rate_limit_message = """
-                Oops! Sorry, I can't talk now. Too many people have used
-                this service recently.
-            """
-            st.session_state.messages.append(
-                {"role": "assistant", "content": rate_limit_message}
-            )
-            st.rerun()
+        with st.chat_message("assistant"):
+            try:
+                stream = client.chat.completions.create(
+                    model=st.session_state["openai_model"],
+                    messages=[
+                        {"role": m["role"], "content": m["content"]}
+                        for m in st.session_state.messages
+                    ],
+                    stream=True,
+                )
+                response = st.write_stream(stream)
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": response}
+                )
+            except:
+                st.session_state.max_messages = len(st.session_state.messages)
+                rate_limit_message = """
+                    Oops! Sorry, I can't talk now. Too many people have used
+                    this service recently.
+                """
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": rate_limit_message}
+                )
+                st.rerun()
 
 @st.dialog('Submit conversation')
 def submit():
