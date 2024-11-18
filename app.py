@@ -72,7 +72,7 @@ with st.form("my_form"):
     st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info')
-    st.session_state.submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button("Submit")
 
 # st.write(st.session_state.system_message)
 
@@ -89,7 +89,7 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
 #elif st.query_params['p'] == 't' and st.session_state.user_info == '':
 #    st.info('Please enter a short summary of your personal circumstances to start a conversation.')
 
-elif st.session_state.submitted:
+elif submitted:
     if prompt := st.chat_input("Ask something..."):   
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
