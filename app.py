@@ -74,7 +74,7 @@ with st.expander("Form",expanded=True):
         '', key='user_info')
         submitted = st.form_submit_button("Submit")
 
-st.write(st.session_state.system_message)
+#st.write(st.session_state.system_message)
 
 for message in st.session_state.messages:
     if message['role']!='system':
