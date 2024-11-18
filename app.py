@@ -69,7 +69,7 @@ with st.form("my_form"):
     st.slider("How old are you?",0,130,key="age")
     st.text_area(
         "Write at least three sentences about yourself.",
-        '', key='user_info',on_change=setup_messages)
+        '', key='user_info')
     submitted = st.form_submit_button("Submit")
 
 # st.write(st.session_state.system_message)
