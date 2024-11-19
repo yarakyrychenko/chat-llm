@@ -66,7 +66,7 @@ with st.expander("Information"):
 - The website may be unavailable if too many people use it simultaneously."""
 )
 
-with st.expander("Form",expanded=st.session_state.submitted):
+with st.expander("Form",expanded=not st.session_state.submitted):
     with st.form("Form",border=False):
         st.slider("How old are you?",0,130,key="age")
         st.text_area(
