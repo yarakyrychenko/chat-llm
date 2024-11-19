@@ -2,6 +2,7 @@ import streamlit as st
 from openai import OpenAI
 from datetime import datetime
 import time
+import numpy as np
 
 st.set_page_config(
     page_title="Chat with me!",
@@ -19,6 +20,9 @@ if 'inserted' not in st.session_state:
     with open('personalization.txt', 'r') as file:
         st.session_state.personalization_text = file.read()
 
+    st.session_state.actions_list = np.random.permutation(
+        ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"]
+    )
     st.session_state.inserted = 0
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
     st.session_state.max_messages = 20
@@ -78,7 +82,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
         st.radio("What is your gender?", ['Male', 'Female'], key="gender")
         st.radio("What is your highest level of education?", ['Some School','High School', 'Bachelor', 'Master', 'PhD'], key="education")
         st.multiselect('What climate actions are you currently taking?',
-                       ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"],
+                       st.session_state.actions_list,
                        key="climate_actions"
         )
         st.text_area(
