@@ -91,8 +91,8 @@ with st.expander("Form",expanded=not st.session_state.submitted):
 
         columns_form = st.columns((1,1,1))
         with columns_form[2]:
-            submitted = st.form_submit_button("Submit",use_container_width=True)
-            
+            submitted = st.form_submit_button("Submit",use_container_width=True,disabled=st.session_state.user_info == '')
+
         if submitted:
             st.session_state.submitted = True
             setup_messages()
