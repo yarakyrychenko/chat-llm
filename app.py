@@ -123,9 +123,7 @@ elif st.session_state.user_info == '':
    st.info('Please complete the form above to start a conversation.')
 
 elif prompt := st.chat_input("Ask something..."):   
-    if len(st.session_state.messages) == 1:
-        st.info('Please start the conversation by typing in the chat box.')
-        
+
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
