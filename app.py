@@ -88,7 +88,11 @@ with st.expander("Form",expanded=not st.session_state.submitted):
         st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info')
-        submitted = st.form_submit_button("Submit")
+
+        columns_form = st.columns((1,1,1))
+        with columns_form[2]:
+            submitted = st.form_submit_button("Submit",use_container_width=True)
+            
         if submitted:
             st.session_state.submitted = True
             setup_messages()
