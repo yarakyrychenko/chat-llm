@@ -23,6 +23,10 @@ if 'inserted' not in st.session_state:
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
     st.session_state.max_messages = 20
     st.session_state.user_id = ''
+    st.session_state.climate_actions = []
+    st.session_state.age = ''
+    st.session_state.gender = ''
+    st.session_state.education = ''
 
     st.session_state.submitted = False
 
