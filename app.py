@@ -25,7 +25,7 @@ if 'inserted' not in st.session_state:
     st.session_state.user_id = ''
     st.session_state.climate_actions = []
     st.session_state.age = 0
-    st.session_state.gender = ''
+    st.session_state.gender = 'Male'
     st.session_state.education = ''
 
     st.session_state.submitted = False
