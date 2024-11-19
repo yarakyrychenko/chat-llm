@@ -106,7 +106,7 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
     )
 
 elif st.session_state.user_info == '':
-   st.info('Please submit the form above to start a conversation.')
+   st.info('Please complete the form above to start a conversation.')
 
 elif prompt := st.chat_input("Ask something..."):   
     st.session_state.messages.append({"role": "user", "content": prompt})
