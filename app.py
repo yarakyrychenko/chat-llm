@@ -150,6 +150,9 @@ def submit():
                     "feedback":st.session_state.feedback,
                     "condition":f"k{st.query_params['k']}p{st.query_params['p']}",
                     "age":st.session_state.age,
+                    "gender":st.session_state.gender,
+                    "education":st.session_state.education,
+                    "climate_actions":st.session_state.climate_actions,
                     "inserted":st.session_state.inserted}
         
         from pymongo.mongo_client import MongoClient
