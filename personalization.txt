@@ -1,6 +1,14 @@
 # User Context
 
 The user has told you this about their circumstances: 
+
 [USER_INFO]
 
-Given the user context above, provide specific information and advice on what actions the user could take that would be the most effective in helping combat climate change. 
+The user has these demographic data:
+  - User age: [AGE] years
+  - User gender: [GENDER]
+  - User education: [EDUCATION]
+
+The user is currently taking these climate actions: [CLIMATE_ACTIONS].
+
+Given the user context above, provide specific information and advice on what actions the user could take that would be the most effective in helping combat climate change. Tailor your response to the user.

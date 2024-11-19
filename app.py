@@ -45,6 +45,8 @@ def setup_messages():
     elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
         st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
+        climate_actions = ", ".join(st.session_state.climate_actions)
+        personalization_text = personalization_text.replace('[AGE]',st.session_state.age).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions)
         st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
@@ -69,6 +71,12 @@ with st.expander("Information"):
 with st.expander("Form",expanded=not st.session_state.submitted):
     with st.form("Form",border=False):
         st.slider("How old are you?",0,130,key="age")
+        st.radio("What is your gender?", ['Male', 'Female'], key="gender")
+        st.radio("What is your highest level of education?", ['Some School','High School', 'Bachelor', 'Master', 'PhD'], key="education")
+        st.multiselect('What climate actions are you currently taking?',
+                       ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"],
+                       key="climate_actions"
+        )
         st.text_area(
         "Write at least three sentences about yourself.",
         '', key='user_info')
@@ -137,7 +145,8 @@ def submit():
                     "user_info":st.session_state.user_info,
                     "feedback":st.session_state.feedback,
                     "condition":f"k{st.query_params['k']}p{st.query_params['p']}",
-                    "age":st.session_state.age}
+                    "age":st.session_state.age,
+                    "inserted":st.session_state.inserted}
         
         from pymongo.mongo_client import MongoClient
         from pymongo.server_api import ServerApi
