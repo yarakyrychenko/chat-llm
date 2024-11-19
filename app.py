@@ -73,6 +73,8 @@ with st.expander("Form",expanded=True):
         "Write at least three sentences about yourself.",
         '', key='user_info')
         submitted = st.form_submit_button("Submit")
+        if submitted:
+            setup_messages()
 
 st.write(st.session_state.system_message)
 
