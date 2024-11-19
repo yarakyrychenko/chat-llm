@@ -8,6 +8,15 @@ st.set_page_config(
     page_title="Chat with me!",
     page_icon="🤖"
 )
+st.markdown(
+    """ <style>
+            div[role="radiogroup"] >  :first-child{
+                display: none !important;
+            }
+        </style>
+        """,
+    unsafe_allow_html=True
+)
 
 ### Setting up the session state 
 
@@ -29,8 +38,8 @@ if 'inserted' not in st.session_state:
     st.session_state.user_id = ''
     st.session_state.climate_actions = []
     st.session_state.age = 0
-    st.session_state.gender = 'Male'
-    st.session_state.education = 'Some School'
+    st.session_state.gender = ''
+    st.session_state.education = ''
 
     st.session_state.submitted = False
 
@@ -79,8 +88,9 @@ with st.expander("Information"):
 with st.expander("Form",expanded=not st.session_state.submitted):
     with st.form("Form",border=False):
         st.slider("How old are you?",0,130,key="age")
-        st.radio("What is your gender?", ['Male', 'Female'], key="gender")
-        st.radio("What is your highest level of education?", ['Some School','High School', 'Bachelor', 'Master', 'PhD'], key="education")
+        st.radio("What is your gender?", ['','Male', 'Female', 'Non-binary/Third'], key="gender")
+        st.radio("What is the highest level of education you completed?", 
+                 ['', 'High School or Less', 'Some University but no degree', 'University Bachelors Degree','Graduate or professional degree (e.g., MA, PhD, MD)' ], key="education")
         st.multiselect('What climate actions are you currently taking?',
                        st.session_state.actions_list,
                        key="climate_actions"
