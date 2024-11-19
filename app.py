@@ -50,7 +50,7 @@ def setup_messages():
         st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
         climate_actions = ", ".join(st.session_state.climate_actions)
-        personalization_text = st.session_state.personalization_text.replace('[AGE]',st.session_state.age).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions)
+        personalization_text = st.session_state.personalization_text.replace('[AGE]',st.session_state.age).replace('[GENDER]',str(st.session_state.gender)).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions)
         st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
