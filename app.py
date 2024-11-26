@@ -40,6 +40,9 @@ if 'inserted' not in st.session_state:
     st.session_state.age = 0
     st.session_state.gender = ''
     st.session_state.education = ''
+    st.session_state.locality = ''
+    st.session_state.property = ''
+    st.session_state.income = ''
 
     st.session_state.submitted = False
 
