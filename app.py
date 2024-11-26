@@ -29,9 +29,10 @@ if 'inserted' not in st.session_state:
     with open('personalization.txt', 'r') as file:
         st.session_state.personalization_text = file.read()
 
-    st.session_state.actions_list = ['None'] + np.random.permutation(
+    st.session_state.actions_list = list(np.random.permutation(
         ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"]
-    )
+    ))
+    st.session_state.actions_list.append("None")
     st.session_state.inserted = 0
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
     st.session_state.max_messages = 20
@@ -107,7 +108,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
                  ['', 'Own','Rent','Neither (I live rent-free)',
                   'Other' ], key="property")
         st.radio("What was your total household income before taxes during the past 12 months?",
-                    ['','Less than $25,000','$25,000 to $49,999','$50,000 to $74,999','$75,000 to $99,999','$100,000 to $149,999','$150,000 or more'], key="income")
+                    ['','Less than \$25,000','\$25,000 to \$49,999','\$50,000 to \$74,999','\$75,000 to \$99,999','\$100,000 to \$149,999','\$150,000 or more'], key="income")
         st.multiselect('What climate actions are you currently taking?',
                        st.session_state.actions_list,
                        key="climate_actions"
