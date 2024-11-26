@@ -90,7 +90,7 @@ with st.expander("Information"):
 
 with st.expander("Form",expanded=not st.session_state.submitted):
     with st.form("Form",border=False):
-        st.text("How old are you?",key="age")
+        st.text_input("How old are you?",key="age")
         st.radio("Do you describe yourself as a man, a woman, or in some other way?", 
                  ['','Man', 'Woman', 'Other'], key="gender")
         st.radio("What is the highest level of education you completed?", 
