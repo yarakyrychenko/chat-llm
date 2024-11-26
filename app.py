@@ -25,11 +25,11 @@ if 'inserted' not in st.session_state:
     with open('base.txt', 'r') as file:
         st.session_state.base_text = file.read()
     with open('knowledge.txt', 'r') as file:
-        st.session_state.knowledge_text = file.read()
+        st.session_state.knowledge_text = "" # file.read()
     with open('personalization.txt', 'r') as file:
         st.session_state.personalization_text = file.read()
 
-    st.session_state.actions_list = np.random.permutation(
+    st.session_state.actions_list = ['None'] + np.random.permutation(
         ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"]
     )
     st.session_state.inserted = 0
@@ -63,7 +63,7 @@ def setup_messages():
         st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
         climate_actions = ", ".join(st.session_state.climate_actions)
-        personalization_text = st.session_state.personalization_text.replace('[AGE]',str(st.session_state.age)).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions)
+        personalization_text = st.session_state.personalization_text.replace('[AGE]',str(st.session_state.age)).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions).replace('[LOCALITY]',st.session_state.locality).replace('[PROPERTY]',st.session_state.property).replace('[INCOME]',st.session_state.income)
         st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
@@ -87,10 +87,24 @@ with st.expander("Information"):
 
 with st.expander("Form",expanded=not st.session_state.submitted):
     with st.form("Form",border=False):
-        st.slider("How old are you?",0,130,key="age")
-        st.radio("What is your gender?", ['','Male', 'Female', 'Non-binary/Third'], key="gender")
+        st.text("How old are you?",key="age")
+        st.radio("Do you describe yourself as a man, a woman, or in some other way?", 
+                 ['','Man', 'Woman', 'Other'], key="gender")
         st.radio("What is the highest level of education you completed?", 
-                 ['', 'High School or Less', 'Some University but no degree', 'University Bachelors Degree','Graduate or professional degree (e.g., MA, PhD, MD)' ], key="education")
+                 ['', 
+                  'Did not graduate high school', 
+                  'High school graduate, GED, or alternative', 
+                  'Some college, or associates degree',
+                  "Bachelor's (college) degree or equivalent",
+                  'Graduate degree (e.g., Master’s degree, MBA)',
+                  'Doctorate degree (e.g., PhD, MD)'], key="education")
+        st.radio("What type of a community do you live in?", 
+                 ['', 'Urban','Suburban','Rural','Other'], key="locality")
+        st.radio("Do you own or rent the home in which you live?", 
+                 ['', 'Own','Rent','Neither (I live rent-free)',
+                  'Other' ], key="property")
+        st.radio("What was your total household income before taxes during the past 12 months?",
+                    ['','Less than $25,000','$25,000 to $49,999','$50,000 to $74,999','$75,000 to $99,999','$100,000 to $149,999','$150,000 or more'], key="income")
         st.multiselect('What climate actions are you currently taking?',
                        st.session_state.actions_list,
                        key="climate_actions"
@@ -107,7 +121,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
             st.session_state.submitted = True
             setup_messages()
 
-#st.write(st.session_state.system_message)
+st.write(st.session_state.system_message)
 
 for message in st.session_state.messages:
     if message['role']!='system':
