@@ -18,19 +18,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """<style>
-    span.math, span.inline-math {
-        display: inline !important;
-    }
-    span.math:before, span.math:after,
-    span.inline-math:before, span.inline-math:after {
-        content: '' !important;
-    }
-</style>""",
-    unsafe_allow_html=True,
-)
-
 ### Setting up the session state 
 
 if 'inserted' not in st.session_state:

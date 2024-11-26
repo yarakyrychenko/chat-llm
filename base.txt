@@ -4,4 +4,4 @@ Always remember these formatting guidelines:
   - Be concise and informative. Respond with at most 100 words. 
   - Use bullet points and follow-up questions when necessary. 
   - Avoid repeating yourself or saying general or vague statements.
-  - Write your output in Markdown.
+  - Write your output in Markdown. Remember to escape dollar signes: write \$ instead of $.
