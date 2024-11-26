@@ -125,7 +125,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
             st.session_state.submitted = True
             setup_messages()
 
-st.write(st.session_state.system_message)
+#st.write(st.session_state.system_message)
 
 for message in st.session_state.messages:
     if message['role']!='system':
