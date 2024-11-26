@@ -42,6 +42,7 @@ if 'inserted' not in st.session_state:
     st.session_state.gender = ''
     st.session_state.education = ''
     st.session_state.locality = ''
+    st.session_state.zipcode = ''
     st.session_state.property = ''
     st.session_state.income = ''
 
@@ -67,7 +68,7 @@ def setup_messages():
         st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
         climate_actions = ", ".join(st.session_state.climate_actions)
-        personalization_text = st.session_state.personalization_text.replace('[AGE]',str(st.session_state.age)).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions).replace('[LOCALITY]',st.session_state.locality).replace('[PROPERTY]',st.session_state.property).replace('[INCOME]',st.session_state.income)
+        personalization_text = st.session_state.personalization_text.replace('[AGE]',str(st.session_state.age)).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',climate_actions).replace('[LOCALITY]',st.session_state.locality).replace('[PROPERTY]',st.session_state.property).replace('[INCOME]',st.session_state.income).replace('[ZIPCODE]',st.session_state.zipcode)
         st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
@@ -104,6 +105,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
                   'Doctorate degree (e.g., PhD, MD)'], key="education")
         st.radio("What type of a community do you live in?", 
                  ['', 'Urban','Suburban','Rural','Other'], key="locality")
+        st.text_input("What is your US Zip Code?", key="zipcode")
         st.radio("Do you own or rent the home in which you live?", 
                  ['', 'Own','Rent','Neither (I live rent-free)',
                   'Other' ], key="property")
@@ -189,6 +191,10 @@ def submit():
                     "age":st.session_state.age,
                     "gender":st.session_state.gender,
                     "education":st.session_state.education,
+                    "locality":st.session_state.locality,
+                    "zipcode":st.session_state.zipcode,
+                    "property":st.session_state.property,
+                    "income":st.session_state.income,
                     "climate_actions":st.session_state.climate_actions,
                     "inserted":st.session_state.inserted}
         

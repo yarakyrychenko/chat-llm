@@ -10,6 +10,7 @@ The user has these demographic data:
 - Gender: [GENDER]
 - Education: [EDUCATION]
 - Locality: [LOCALITY]
+- US ZIP Code: [ZIPCODE]
 - Property status: [PROPERTY]
 - Income/wealth: [INCOME]
 
