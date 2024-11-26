@@ -18,6 +18,19 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.markdown(
+    """<style>
+    span.math, span.inline-math {
+        display: inline !important;
+    }
+    span.math:before, span.math:after,
+    span.inline-math:before, span.inline-math:after {
+        content: '' !important;
+    }
+</style>""",
+    unsafe_allow_html=True,
+)
+
 ### Setting up the session state 
 
 if 'inserted' not in st.session_state:
@@ -38,7 +51,7 @@ if 'inserted' not in st.session_state:
     st.session_state.max_messages = 20
     st.session_state.user_id = ''
     st.session_state.climate_actions = []
-    st.session_state.age = '0'
+    st.session_state.age = ''
     st.session_state.gender = ''
     st.session_state.education = ''
     st.session_state.locality = ''
