@@ -71,9 +71,10 @@ def setup_messages():
 st.title("Chat with me!")
 with st.expander("Information"):
         st.markdown(
-        f"""- Type in the chat box to start a conversation.
+        f""" - Complete and submit the from. 
+- Type in the chat box to start a conversation.
 - Use the *End Conversation* button to finish and submit.
-- Each conversation allows up to 10 messages.
+- Each conversation allows up to 20 messages.
 - You have submitted {st.session_state.inserted} conversation(s).
 - The website may be unavailable if too many people use it simultaneously."""
 )
@@ -108,11 +109,16 @@ with st.expander("Form",expanded=not st.session_state.submitted):
 
         columns_form = st.columns((1,1,1))
         with columns_form[2]:
-            submitted = st.form_submit_button("Submit",use_container_width=True)
+            submitted = st.form_submit_button("Submit",use_container_width=True,
+                                              enter_to_submit=False)
 
-        if submitted:
+        all_form_completed = st.session_state.age != '' and st.session_state.gender != '' and st.session_state.education != '' and st.session_state.locality != '' and st.session_state.zipcode != '' and st.session_state.property != '' and st.session_state.income != '' and st.session_state.climate_actions != '' and st.session_state.user_info != ''
+
+        if submitted and all_form_completed:
             st.session_state.submitted = True
             setup_messages()
+        elif submitted and not all_form_completed:
+            st.warning('Please complete every entry of the form and submit again to start a conversation.')
 
 #st.write(st.session_state.system_message)
 
@@ -125,9 +131,6 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
     st.info(
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
-
-elif st.session_state.user_info == '':
-   st.info('Please complete the form above to start a conversation.')
 
 elif prompt := st.chat_input("Ask something..."):   
 
