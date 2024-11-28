@@ -2,7 +2,6 @@ import streamlit as st
 from openai import OpenAI
 from datetime import datetime
 import time
-import numpy as np
 
 st.set_page_config(
     page_title="Chat with me!",
@@ -24,18 +23,18 @@ if 'inserted' not in st.session_state:
     ### read in txts
     with open('base.txt', 'r') as file:
         st.session_state.base_text = file.read()
-    with open('knowledge.txt', 'r') as file:
-        st.session_state.knowledge_text = "" # file.read()
     with open('personalization.txt', 'r') as file:
         st.session_state.personalization_text = file.read()
 
-    st.session_state.actions_list = list(np.random.permutation(
-        ["Living car-free", "Owning or leasing an electric car", "Avoiding one long-haul flight", "Purchasing renewable electricity", "Eating a vegan diet", "Installing heat pumps", "Eating a vegetarian diet", "Car-pooling", "Reducing food waste", "Eating seasonally", "Turning down the heating", "Buying fewer things", "Using energy-efficient appliances", "Recycling"]
-    ))
-    st.session_state.actions_list.append("None")
+    # web app state
     st.session_state.inserted = 0
+    st.session_state.submitted = False
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
-    st.session_state.max_messages = 20
+    st.session_state.max_messages = 40
+    st.session_state.messages = []
+    st.session_state.OpenAIclient = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+    # user info state
     st.session_state.user_id = ''
     st.session_state.climate_actions = ''
     st.session_state.age = ''
@@ -45,37 +44,27 @@ if 'inserted' not in st.session_state:
     st.session_state.zipcode = ''
     st.session_state.property = ''
     st.session_state.income = ''
+    st.session_state.user_info = ''
 
-    st.session_state.submitted = False
+    # timers
+    st.session_state.start_time = datetime.now()
+    st.session_state.convo_start_time = ''
 
-if 'k' not in st.query_params:
-    st.query_params['k'] = 't'
 if 'p' not in st.query_params:
     st.query_params['p'] = 't'
 
-if 'user_info' not in st.session_state:
-    st.session_state.user_info = ''
-
 def setup_messages():
-    ### k = knowledge ('f' none, otherwise climate)
     ### p = personalization ('f' none, otherwise personalization)
 
-    if st.query_params["k"] == "f" and st.query_params["p"] == "f":
+    if st.query_params["p"] == "f":
         st.session_state.system_message = st.session_state.base_text 
-    elif st.query_params["k"] == "t" and st.query_params["p"] == "f":
-        st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + st.session_state.base_text
-    elif st.query_params["k"] == "f" and st.query_params["p"] == "t":
-        st.session_state.system_message = st.session_state.personalization_text.replace('[USER_INFO]',st.session_state.user_info) + '\n\n' + st.session_state.base_text
     else:
         personalization_text = st.session_state.personalization_text.replace('[AGE]',str(st.session_state.age)).replace('[GENDER]',st.session_state.gender).replace('[EDUCATION]',st.session_state.education).replace('[CLIMATE_ACTIONS]',st.session_state.climate_actions).replace('[LOCALITY]',st.session_state.locality).replace('[PROPERTY]',st.session_state.property).replace('[INCOME]',st.session_state.income).replace('[ZIPCODE]',st.session_state.zipcode)
-        st.session_state.system_message = st.session_state.knowledge_text + '\n\n' + personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
+
+        st.session_state.system_message = personalization_text.replace('[USER_INFO]',st.session_state.user_info)  + '\n\n' + st.session_state.base_text
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
-
-if 'messages' not in st.session_state:
-    setup_messages()
-
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+    st.session_state.convo_start_time = datetime.now()
 
 ### App interface 
 
@@ -148,7 +137,7 @@ elif prompt := st.chat_input("Ask something..."):
 
     with st.chat_message("assistant"):
         try:
-            stream = client.chat.completions.create(
+            stream = st.session_state.OpenAIclient.chat.completions.create(
                 model=st.session_state["openai_model"],
                 messages=[
                     {"role": m["role"], "content": m["content"]}
@@ -177,15 +166,14 @@ def submit():
     st.slider('You must rate the conversation from *Terrible* to *Perfect* to submit.', 0, 100, format="", key="score", value=50)
     st.text_area('Any feedback?',key="feedback")
     if st.button('Submit', key=None, help=None, use_container_width=True, disabled=st.session_state.user_id=="" or st.session_state.score==50):
-        submission_time = datetime.now().strftime('%Y%m-%d%H-%M%S')
+        submission_date = datetime.now() #.strftime("%Y-%m-%d %H:%M:%S")
 
         user_data={"user_id":st.session_state.user_id,
                     "conversation":st.session_state.messages,
                     "score":st.session_state.score,
-                    "time":submission_time,
                     "user_info":st.session_state.user_info,
                     "feedback":st.session_state.feedback,
-                    "condition":f"k{st.query_params['k']}p{st.query_params['p']}",
+                    "condition":f"p{st.query_params['p']}",
                     "age":st.session_state.age,
                     "gender":st.session_state.gender,
                     "education":st.session_state.education,
@@ -194,7 +182,10 @@ def submit():
                     "property":st.session_state.property,
                     "income":st.session_state.income,
                     "climate_actions":st.session_state.climate_actions,
-                    "inserted":st.session_state.inserted}
+                    "inserted":st.session_state.inserted,
+                    "start_time":st.session_state.start_time,
+                    "convo_start_time":st.session_state.convo_start_time,
+                    "submission_time":submission_date,}
         
         from pymongo.mongo_client import MongoClient
         from pymongo.server_api import ServerApi
