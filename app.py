@@ -32,7 +32,6 @@ if 'inserted' not in st.session_state:
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
     st.session_state.max_messages = 40
     st.session_state.messages = []
-    st.session_state.OpenAIclient = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
     # user info state
     st.session_state.user_id = ''
@@ -52,6 +51,8 @@ if 'inserted' not in st.session_state:
 
 if 'p' not in st.query_params:
     st.query_params['p'] = 't'
+
+OpenAIclient = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
@@ -142,7 +143,7 @@ elif prompt := st.chat_input("Ask something..."):
 
     with st.chat_message("assistant"):
         try:
-            stream = st.session_state.OpenAIclient.chat.completions.create(
+            stream = OpenAIclient.chat.completions.create(
                 model=st.session_state["openai_model"],
                 messages=[
                     {"role": m["role"], "content": m["content"]}
