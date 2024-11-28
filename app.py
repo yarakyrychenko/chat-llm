@@ -104,7 +104,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
                        key="climate_actions"
         )
         st.text_area(
-        "Write at least two sentences about yourself. You can write about your job, hobbies, living arrangements or any other information you think might be relevant. *Do not write anything that could identify you, such as your name or address.*",
+        "Write at least two sentences about yourself. You can write about your job, hobbies, living arrangements or any other information you think might be relevant. **Do not write anything that could identify you, such as your name or address.**",
         '', key='user_info')
 
         columns_form = st.columns((1,1,1))
