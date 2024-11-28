@@ -80,7 +80,7 @@ with st.expander("Information"):
 )
 
 with st.expander("Form",expanded=not st.session_state.submitted):
-    with st.form("Form",border=False):
+    with st.form("Form",border=False, enter_to_submit=False):
         st.text_input("How old are you?",key="age")
         st.radio("Do you describe yourself as a man, a woman, or in some other way?", 
                  ['','Man', 'Woman', 'Other'], key="gender")
@@ -109,8 +109,7 @@ with st.expander("Form",expanded=not st.session_state.submitted):
 
         columns_form = st.columns((1,1,1))
         with columns_form[2]:
-            submitted = st.form_submit_button("Submit",use_container_width=True,
-                                              enter_to_submit=False)
+            submitted = st.form_submit_button("Submit",use_container_width=True)
 
         all_form_completed = st.session_state.age != '' and st.session_state.gender != '' and st.session_state.education != '' and st.session_state.locality != '' and st.session_state.zipcode != '' and st.session_state.property != '' and st.session_state.income != '' and st.session_state.climate_actions != '' and st.session_state.user_info != ''
 
