@@ -52,7 +52,7 @@ if 'inserted' not in st.session_state:
 if 'p' not in st.query_params:
     st.query_params['p'] = 't'
 
-OpenAIclient = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
@@ -143,7 +143,7 @@ elif prompt := st.chat_input("Ask something..."):
 
     with st.chat_message("assistant"):
         try:
-            stream = OpenAIclient.chat.completions.create(
+            stream = client.chat.completions.create(
                 model=st.session_state["openai_model"],
                 messages=[
                     {"role": m["role"], "content": m["content"]}
