@@ -52,8 +52,6 @@ if 'inserted' not in st.session_state:
 if 'p' not in st.query_params:
     st.query_params['p'] = 't'
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
 def setup_messages():
     ### p = personalization ('f' none, otherwise personalization)
 
@@ -66,6 +64,9 @@ def setup_messages():
 
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
     st.session_state.convo_start_time = datetime.now()
+
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 ### App interface 
 
@@ -132,8 +133,8 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
 
-elif st.session_state.submitted == False:
-    pass
+elif st.session_state.user_info == '':
+    st.info('Please complete the form above to start a conversation.')
 
 elif prompt := st.chat_input("Ask something..."):   
 
