@@ -133,8 +133,8 @@ if len(st.session_state.messages) >= st.session_state.max_messages:
         "You have reached the limit of messages for this conversation. Please submit the conversation to start a new one."
     )
 
-elif st.session_state.user_info == '':
-    st.info('Please complete the form above to start a conversation.')
+elif st.session_state.submitted == False:
+    pass
 
 elif prompt := st.chat_input("Ask something..."):   
 
