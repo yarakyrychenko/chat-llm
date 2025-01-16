@@ -27,6 +27,7 @@ if 'inserted' not in st.session_state:
         st.session_state.personalization_text = file.read()
 
     # web app state
+    st.session_state.gotit = False
     st.session_state.inserted = 0
     st.session_state.submitted = False
     st.session_state["openai_model"] = "gpt-4o-mini-2024-07-18"
@@ -69,14 +70,13 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 ### App interface 
 
-st.title("Talk to me about climate change!")
+st.markdwon("# Let's talk climate change!")
 st.markdown(
-f""" 1. Complete and submit the form you'll see shortly. 
-2. Type in the chat box to start a conversation.
-3. Use the *End Conversation* button to finish and submit the conversation.
-4. Submit at least 3 conversations. (You have submitted {st.session_state.inserted}/3 conversation(s).)"""
+f""" 1. Complete and submit the form. {"✅" if st.session_state.submitted else ""}
+2. Type in the chat box to start a conversation. You can ask a climate change related question like "How do I reduce my carbon emissions?" or "What can I do to help the environment?".
+3. Use the *End Conversation* button to finish and submit at least 3 conversation.
+**You have submitted {st.session_state.inserted}/3 conversation(s).**"""
 )
- 
 
 @st.dialog('Form')
 def form():
@@ -117,13 +117,16 @@ def form():
         st.session_state.submitted = True
         setup_messages()
         st.rerun()
-        
+
     elif submitted and not all_form_completed:
         st.warning('Please complete every entry of the form and submit again to start a conversation.')
     
 
 #st.write(st.session_state.system_message)
-if st.button("Got it! Let's start!", key=None, help=None, use_container_width=True) and st.session_state.submitted == False:
+if st.session_state.gotit == False:
+    st.session_state.gotit = st.button("Got it! Let's start!", key=None, help=None, use_container_width=True) 
+
+if st.session_state.gotit and st.session_state.submitted == False:
     form()
 
 for message in st.session_state.messages:
