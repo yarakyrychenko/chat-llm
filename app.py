@@ -116,9 +116,11 @@ def form():
     if submitted and all_form_completed:
         st.session_state.submitted = True
         setup_messages()
+        st.rerun()
+        
     elif submitted and not all_form_completed:
         st.warning('Please complete every entry of the form and submit again to start a conversation.')
-    st.rerun()
+    
 
 #st.write(st.session_state.system_message)
 if st.button("Got it! Let's start!", key=None, help=None, use_container_width=True) and st.session_state.submitted == False:
