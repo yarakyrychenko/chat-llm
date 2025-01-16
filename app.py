@@ -76,6 +76,7 @@ f""" 1. Complete and submit the from below (it will disappear on submission).
 3. Use the *End Conversation* button to finish and submit the conversation.
 4. Submit at least 3 conversations. (You have submitted {st.session_state.inserted}/3 conversation(s).)"""
 )
+ 
 
 @st.dialog('Form')
 def form():
@@ -119,7 +120,7 @@ def form():
         st.warning('Please complete every entry of the form and submit again to start a conversation.')
 
 #st.write(st.session_state.system_message)
-if st.session_state.submitted == False:
+if st.button("Got it! Let's start!", key=None, help=None, use_container_width=True) and st.session_state.submitted == False:
     form()
 
 for message in st.session_state.messages:
