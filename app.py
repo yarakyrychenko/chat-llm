@@ -5,7 +5,8 @@ import time
 
 st.set_page_config(
     page_title="Chat with me!",
-    page_icon="🤖"
+    page_icon="🌎",
+    layout="wide"
 )
 st.markdown(
     """ <style>
