@@ -71,7 +71,7 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.title("Talk to me about climate change!")
 st.markdown(
-f""" 1. Complete and submit the from below (it will disappear on submission). 
+f""" 1. Complete and submit the form you'll see shortly. 
 2. Type in the chat box to start a conversation.
 3. Use the *End Conversation* button to finish and submit the conversation.
 4. Submit at least 3 conversations. (You have submitted {st.session_state.inserted}/3 conversation(s).)"""
@@ -118,6 +118,7 @@ def form():
         setup_messages()
     elif submitted and not all_form_completed:
         st.warning('Please complete every entry of the form and submit again to start a conversation.')
+    st.rerun()
 
 #st.write(st.session_state.system_message)
 if st.button("Got it! Let's start!", key=None, help=None, use_container_width=True) and st.session_state.submitted == False:
