@@ -65,63 +65,62 @@ def setup_messages():
     st.session_state.messages = [{ "role": "system", "content": st.session_state.system_message}]
     st.session_state.convo_start_time = datetime.now()
 
-
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 ### App interface 
 
-st.title("Chat with me!")
-with st.expander("Information"):
-        st.markdown(
-        f""" - Complete and submit the from. 
-- Type in the chat box to start a conversation.
-- Use the *End Conversation* button to finish and submit.
-- Each conversation allows up to 20 messages.
-- You have submitted {st.session_state.inserted} conversation(s).
-- The website may be unavailable if too many people use it simultaneously."""
+st.title("Talk to me about climate change!")
+st.markdown(
+f""" 1. Complete and submit the from below (it will disappear on submission). 
+2. Type in the chat box to start a conversation.
+3. Use the *End Conversation* button to finish and submit the conversation.
+4. Submit at least 3 conversations. (You have submitted {st.session_state.inserted}/3 conversation(s).)"""
 )
 
-with st.expander("Form",expanded=not st.session_state.submitted):
-    with st.form("Form",border=False, enter_to_submit=False):
-        st.text_input("How old are you?",key="age")
-        st.radio("Do you describe yourself as a man, a woman, or in some other way?", 
-                 ['','Man', 'Woman', 'Other'], key="gender")
-        st.radio("What is the highest level of education you completed?", 
-                 ['', 
-                  'Did not graduate high school', 
-                  'High school graduate, GED, or alternative', 
-                  'Some college, or associates degree',
-                  "Bachelor's (college) degree or equivalent",
-                  'Graduate degree (e.g., Master’s degree, MBA)',
-                  'Doctorate degree (e.g., PhD, MD)'], key="education")
-        st.radio("What type of a community do you live in?", 
-                 ['', 'Urban','Suburban','Rural','Other'], key="locality")
-        st.text_input("What is your US Zip Code?", key="zipcode")
-        st.radio("Do you own or rent the home in which you live?", 
-                 ['', 'Own','Rent','Neither (I live rent-free)',
-                  'Other' ], key="property")
-        st.radio("What was your total household income before taxes during the past 12 months?",
-                    ['','Less than \$25,000','\$25,000 to \$49,999','\$50,000 to \$74,999','\$75,000 to \$99,999','\$100,000 to \$149,999','\$150,000 or more'], key="income")
-        st.text_area('Please describe any actions you are taking to address climate change? Write "None" if you are not taking any.',
-                       key="climate_actions"
-        )
-        st.text_area(
-        "Write at least two sentences about yourself. You can write about your job, hobbies, living arrangements or any other information you think might be relevant. **Do not write anything that could identify you, such as your name or address.**",
-        '', key='user_info')
+@st.dialog('Form')
+def form():
+    #with st.form("Form",border=False, enter_to_submit=False):
+    st.text_input("How old are you in years?",key="age")
+    st.radio("Do you describe yourself as a man, a woman, or in some other way?", 
+                ['','Man', 'Woman', 'Other'], key="gender")
+    st.radio("What is the highest level of education you completed?", 
+                ['', 
+                'Did not graduate high school', 
+                'High school graduate, GED, or alternative', 
+                'Some college, or associates degree',
+                "Bachelor's (college) degree or equivalent",
+                'Graduate degree (e.g., Master’s degree, MBA)',
+                'Doctorate degree (e.g., PhD, MD)'], key="education")
+    st.radio("What type of a community do you live in?", 
+                ['', 'Urban','Suburban','Rural','Other'], key="locality")
+    st.text_input("What is your US Zip Code?", key="zipcode")
+    st.radio("Do you own or rent the home in which you live?", 
+                ['', 'Own','Rent','Neither (I live rent-free)',
+                'Other' ], key="property")
+    st.radio("What was your total household income before taxes during the past 12 months?",
+                ['','Less than \$25,000','\$25,000 to \$49,999','\$50,000 to \$74,999','\$75,000 to \$99,999','\$100,000 to \$149,999','\$150,000 or more'], key="income")
+    st.text_area('Please describe any actions you are taking to address climate change? Write "None" if you are not taking any.',
+                    key="climate_actions"
+    )
+    st.text_area(
+    "Write at least two sentences about yourself. You can write about your job, hobbies, living arrangements or any other information you think might be relevant. **Do not write anything that could identify you, such as your name or address.**",
+    '', key='user_info')
 
-        columns_form = st.columns((1,1,1))
-        with columns_form[2]:
-            submitted = st.form_submit_button("Submit",use_container_width=True)
+    columns_form = st.columns((1,1,1))
+    with columns_form[2]:
+        submitted = st.button("Submit",use_container_width=True)
 
-        all_form_completed = st.session_state.age != '' and st.session_state.gender != '' and st.session_state.education != '' and st.session_state.locality != '' and st.session_state.zipcode != '' and st.session_state.property != '' and st.session_state.income != '' and st.session_state.climate_actions != '' and st.session_state.user_info != ''
+    all_form_completed = st.session_state.age != '' and st.session_state.gender != '' and st.session_state.education != '' and st.session_state.locality != '' and st.session_state.zipcode != '' and st.session_state.property != '' and st.session_state.income != '' and st.session_state.climate_actions != '' and st.session_state.user_info != ''
 
-        if submitted and all_form_completed:
-            st.session_state.submitted = True
-            setup_messages()
-        elif submitted and not all_form_completed:
-            st.warning('Please complete every entry of the form and submit again to start a conversation.')
+    if submitted and all_form_completed:
+        st.session_state.submitted = True
+        setup_messages()
+    elif submitted and not all_form_completed:
+        st.warning('Please complete every entry of the form and submit again to start a conversation.')
 
 #st.write(st.session_state.system_message)
+if st.session_state.submitted == False:
+    form()
 
 for message in st.session_state.messages:
     if message['role']!='system':
