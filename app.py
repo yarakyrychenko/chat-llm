@@ -70,7 +70,7 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 ### App interface 
 
-st.markdwon("# Let's talk climate change!")
+st.markdown("# Let's talk climate change!")
 st.markdown(
 f""" 1. Complete and submit the form. {"✅" if st.session_state.submitted else ""}
 2. Type in the chat box to start a conversation. You can ask a climate change related question like "How do I reduce my carbon emissions?" or "What can I do to help the environment?".
