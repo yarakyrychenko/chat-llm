@@ -114,13 +114,13 @@ def submit():
 
 st.markdown("# Let's talk climate change!")
 st.markdown(
-f"""### Step 1. Complete and submit the form. {"✅" if st.session_state.submitted else ""}
+f"""**Step 1. Complete and submit the form.** {"✅" if st.session_state.submitted else ""}
 
-### Step 2. Type in the chat box to start a conversation.
+**Step 2. Type in the chat box to start a conversation.** 
 
 You can ask a climate change related question like "How do I reduce my carbon emissions?" or "What can I do to help the environment?". You have to reply to the assistant at least four times to submit the conversation.
 
-### Step 3. Use the *End Conversation* button to finish and submit your response."""
+**Step 3. Use the *End Conversation* button to finish and submit your response.**"""
 )
 
 @st.dialog('Form')
