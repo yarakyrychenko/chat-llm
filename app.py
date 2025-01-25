@@ -188,7 +188,7 @@ elif st.session_state.submitted == False:
     pass
 
 elif st.query_params["p"] == "n":
-    st.markdown("### Thank you! We have already received enough responese. Please press *End Conversation* and proceed with the survey.")
+    st.markdown("### Please press *End Conversation* to submit your data and proceed with the survey.We have already received enough responese.")
     columns = st.columns((1,1,1))
     with columns[2]:
         if st.button("End Conversation",use_container_width=True):
